@@ -1,4 +1,81 @@
 <!DOCTYPE html>
+<!--
+=========================================================
+   GARBOLITE CHESS
+---------------------------------------------------------
+   Single-file JavaScript chess game using an embedded
+   Garbo-style engine running inside a Web Worker.
+
+   Optimized for:
+   - Old browsers / ES5-style JavaScript
+   - Kindle and other low-power devices
+   - Single-file offline gameplay
+
+---------------------------------------------------------
+   ENGINE FEATURES
+---------------------------------------------------------
+
+   [Search]
+   - Alpha-Beta Search
+   - Iterative Deepening
+   - Aspiration Windows
+   - Quiescence Search
+   - Principal Variation Tracking
+
+   [Move Ordering]
+   - Hash Move Ordering
+   - MVV-LVA Capture Ordering
+   - Killer Moves
+   - History Heuristic
+   - Staged Move Picker
+
+   [Optimizations]
+   - Zobrist Hashing
+   - Transposition Table
+   - Null Move Pruning
+   - Late Move Reduction
+   - Razoring
+   - Futility Pruning
+   - Time-Limited Search
+
+   [Evaluation]
+   - Material Count
+   - Piece-Square Tables
+   - Mobility Evaluation
+   - Incremental Evaluation Updates
+
+   [Game Features]
+   - Web Worker Engine
+   - FEN Position Transfer
+   - Legal Move Validation in UI
+   - Full Promotion Support
+   - Castling and En Passant
+   - Move History
+
+---------------------------------------------------------
+   CONFIGURED PLAYING STRENGTH
+---------------------------------------------------------
+
+   ELO ~900  : depth 2,  250 ms
+   ELO ~1100 : depth 3,  400 ms
+   ELO ~1300 : depth 4,  650 ms
+   ELO ~1500 : depth 5,  900 ms
+   ELO ~1600 : depth 6, 1200 ms
+   ELO ~1700 : depth 7, 1600 ms
+
+   Displayed Elo is approximate.
+   Actual strength depends heavily on browser and device speed.
+
+---------------------------------------------------------
+   DESIGN GOALS
+---------------------------------------------------------
+   - Strong tactical play in a compact offline file
+   - Responsive UI via Web Worker search
+   - Compatibility with low-power e-ink devices
+   - Simple chessboard interface
+
+=========================================================
+-->
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -639,10 +716,7 @@ var gHist=[], gMoveNum=1;
 function newGame(){
   lozzaReq++;
   lozzaThinking=false;
-  if(lozzaWorker){
-    lozzaPost('stop');
-    lozzaPost('ucinewgame');
-  }
+  /* Lozza khong co lenh stop/ucinewgame - khong gui gi */
   gB=makeBoard(); gTurn=W; gEP=-1;
   gCas={WK:true,WQ:true,BK:true,BQ:true};
   gHalf=0; gFull=1;
@@ -1048,7 +1122,7 @@ function GetMoveFromString(moveString) {
             return moves[i];
         }
     }
-    alert("busted! ->" + moveString + " fen:" + GetFen());
+    postMessage("message busted! ->" + moveString + " fen:" + GetFen());
 }
 
 function PVFromHash(move, ply) {
